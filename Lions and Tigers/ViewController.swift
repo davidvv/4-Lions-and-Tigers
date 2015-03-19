@@ -22,6 +22,9 @@ class ViewController: UIViewController {
     //defino una variable currentIndex para evitar que se muestre siempre el mismo gato
     var currentIndex = 0
     
+    //defino un Tuple para guardar el animal mostrado actualmente
+    var currentAnimal = (Species: "Tiger", Index: 0)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -92,7 +95,7 @@ class ViewController: UIViewController {
         lioness.name = "Sarabi"
         lioness.subspecies = "Barbary"
         
-        self.lions =+ [lion, lioness]
+        self.lions += [lion, lioness]
         
         
         
@@ -138,7 +141,16 @@ class ViewController: UIViewController {
                 (finished: Bool) -> () in
         })
         
-        
+        func updateAnimal(){
+            switch currentAnimal{
+            case ("Tiger", _): let randomIndex = Int(arc4random_uniform(UInt32(lions.count)))
+            currentAnimal = ("Lion", randomIndex)
+            
+            default: let randomIndex = Int(arc4random_uniform(UInt32(myTigers.count)))
+            currentAnimal = ("Tiger", randomIndex)
+                
+            }
+        }
         
         
     }
