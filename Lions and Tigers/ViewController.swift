@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     //defino myTigers como Property, para que esté accesible dentro de todas las funciones (las de botones, así como la de viewDidLoad() y demás
     var myTigers:[Tiger] = []
     var lions:[Lion] = []
+    var lionCubs:[LionCub] = []
 
     //defino una variable currentIndex para evitar que se muestre siempre el mismo gato
     var currentIndex = 0
@@ -97,6 +98,31 @@ class ViewController: UIViewController {
         
         self.lions += [lion, lioness]
         
+        lion.roar()
+        lioness.roar()
+        
+        lion.changeToAlphaMale()
+        println(lion.isAlphaMale)
+        
+        var lionCub = LionCub()
+        lionCub.name = "Simba"
+        lionCub.age = 1
+        lionCub.image = UIImage(named: "LionCub1.jpg")
+        lionCub.subspecies = "Masai"
+        lionCub.isAlphaMale = true
+        
+        lionCub.roar()
+        lionCub.rubLionCubsBelly()
+        
+        var femaleLionCub = LionCub()
+        femaleLionCub.name = "Nala"
+        femaleLionCub.age = 1
+        femaleLionCub.image = UIImage(named: "LionCub2.jpeg")
+        femaleLionCub.subspecies = "Transvaal"
+        femaleLionCub.isAlphaMale = false
+        
+        self.lionCubs += [lionCub, femaleLionCub]
+        
         
         
     }
@@ -107,53 +133,62 @@ class ViewController: UIViewController {
     }
 
     @IBAction func nextBarButtonItemPressed(sender: UIBarButtonItem) {
-        
-        
-        var randomIndex:Int //declaro la variable randomIndex
-        
-        do{randomIndex = Int(arc4random_uniform(UInt32(myTigers.count)))
-        }while randomIndex == currentIndex
-        
-        currentIndex = randomIndex
-        
-        //arriba he declarado currentIndex como propiedad. Tiene un valor inicial 0 y despues toma el valor de randomIndex. De esa manera, si al darle al botón y generar un nuevo randomIndex, es igual que el último ( que está guardado en currentIndex, repite el proceso de generación de randomIndex hasta que sea diferente
-        
-
-        
-        
-        let tiger = myTigers[randomIndex]
-        
-//        myImageView.image = tiger.image
-//        nameLabel.text = tiger.name
-//        ageLabel.text = "\(tiger.age)"
-//        breedLabel.text = tiger.breed
-        
-        UIView.transitionWithView(self.view, duration: 1, options: UIViewAnimationOptions.TransitionCrossDissolve, animations:{
-            
-            //en lugar de hacer que se muestre un bicho cualquiera al apretar el botón, hago que además entre con una animación, por eso he comentado ahí arriba las 4 lineas. Tengo que utilizar ".self":
-            self.myImageView.image = tiger.image
-            self.nameLabel.text = tiger.name
-            self.ageLabel.text = "\(tiger.name) is \(tiger.age) years old"
-            self.breedLabel.text = tiger.breed
-            self.randomFactLabel.text = tiger.randomFact()
-            
-            },completion: {
-                (finished: Bool) -> () in
-        })
-        
+        updateAnimal()
+        updateView()
+        }
+    
+    
         func updateAnimal(){
             switch currentAnimal{
             case ("Tiger", _): let randomIndex = Int(arc4random_uniform(UInt32(lions.count)))
             currentAnimal = ("Lion", randomIndex)
+            
+            case ("Lion", _): let randomIndex = Int(arc4random_uniform(UInt32(lionCubs.count)))
+            currentAnimal = ("Lion Cub", randomIndex)
             
             default: let randomIndex = Int(arc4random_uniform(UInt32(myTigers.count)))
             currentAnimal = ("Tiger", randomIndex)
                 
             }
         }
+    func updateView(){
         
+
         
+        UIView.transitionWithView(self.view, duration: 0.5, options: UIViewAnimationOptions.TransitionCrossDissolve, animations:{
+            if self.currentAnimal.Species == "Tiger" {
+                let tiger = self.myTigers[self.currentAnimal.Index]
+                self.myImageView.image = tiger.image
+                self.nameLabel.text = tiger.name
+                self.ageLabel.text = "\(tiger.age) years old"
+                self.breedLabel.text = tiger.breed
+                self.randomFactLabel.text = tiger.randomFact()
+                
+            } else if self.currentAnimal.Species == "Lion" {
+                let lion = self.lions[self.currentAnimal.Index]
+                self.myImageView.image = lion.image
+                self.nameLabel.text = lion.name
+                self.ageLabel.text = "\(lion.age) years old"
+                self.breedLabel.text = lion.subspecies
+                self.randomFactLabel.text = lion.randomFact()
+                
+            } else if self.currentAnimal.Species == "Lion Cub" {
+                let lionCub = self.lionCubs[self.currentAnimal.Index]
+                self.myImageView.image = lionCub.image
+                self.nameLabel.text = lionCub.name
+                self.ageLabel.text = "\(lionCub.age) years old"
+                self.breedLabel.text = lionCub.subspecies
+                self.randomFactLabel.text = lionCub.randomFact()
+                
+            }
+            
+            
+            },completion: {
+                (finished: Bool) -> () in
+        })
+
     }
 
+    
 }
 
